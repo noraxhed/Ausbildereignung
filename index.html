@@ -24,6 +24,8 @@
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
       width: 90%;
       max-width: 800px;
+      overflow-y: auto;
+      max-height: 95vh;
     }
 
     h1 {
@@ -81,53 +83,69 @@
     <h1>Fachbegriffe der Veranstaltungstechnik</h1>
     <p>Ordne jedem Bild den passenden Begriff zu.</p>
 
-    <form id="quizForm">
-      <div class="quiz-item">
-        <img src="images/bild1.jpg" alt="Bild 1">
-        <select name="frage1">
-          <option value="">-- Begriff auswählen --</option>
-          <option value="Begriff 1">Begriff 1</option>
-          <option value="Begriff 2">Begriff 2</option>
-          <option value="Begriff 3">Begriff 3</option>
-        </select>
-      </div>
-
-      <div class="quiz-item">
-        <img src="images/bild2.jpg" alt="Bild 2">
-        <select name="frage2">
-          <option value="">-- Begriff auswählen --</option>
-          <option value="Begriff 1">Begriff 1</option>
-          <option value="Begriff 2">Begriff 2</option>
-          <option value="Begriff 3">Begriff 3</option>
-        </select>
-      </div>
-
-      <button type="submit">Auswertung anzeigen</button>
-    </form>
-
+    <form id="quizForm"></form>
     <div id="ergebnis"></div>
   </main>
-
   <script>
-    document.getElementById('quizForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    const daten = [
+      { bild: "bild1.jpg", name: "frage1", korrekt: "Bühne", begriffe: ["Bühne", "Mikrofon", "Traverse"] },
+      { bild: "bild2.jpg", name: "frage2", korrekt: "Traverse", begriffe: ["Traverse", "Rigging", "PA-Anlage"] },
+      { bild: "Bild3.jpg", name: "frage3", korrekt: "FOH", begriffe: ["FOH", "Backstage", "Scheinwerfer"] },
+      { bild: "Bild4.jpg", name: "frage4", korrekt: "Rigging", begriffe: ["Rigging", "Laufweg", "Notausgang"] },
+      { bild: "Bild5.jpg", name: "frage5", korrekt: "PA-Anlage", begriffe: ["PA-Anlage", "Lichtpult", "Bühne"] },
+      { bild: "Bild6.jpg", name: "frage6", korrekt: "Lichtpult", begriffe: ["Lichtpult", "Traverse", "Mikrofon"] },
+      { bild: "Bild7.jpg", name: "frage7", korrekt: "Mikrofon", begriffe: ["Mikrofon", "Scheinwerfer", "Backstage"] },
+      { bild: "Bild8.jpg", name: "frage8", korrekt: "Laufweg", begriffe: ["Laufweg", "FOH", "Notausgang"] },
+      { bild: "Bild9.jpg", name: "frage9", korrekt: "Scheinwerfer", begriffe: ["Scheinwerfer", "Lichtpult", "Backstage"] },
+      { bild: "Bild10.jpg", name: "frage10", korrekt: "Backstage", begriffe: ["Backstage", "Rigging", "PA-Anlage"] }
+    ];
 
-      const richtigeAntworten = {
-        frage1: "Begriff 1",
-        frage2: "Begriff 2"
-      };
-
-      let punkte = 0;
-      let gesamt = Object.keys(richtigeAntworten).length;
-
-      for (let key in richtigeAntworten) {
-        const userAntwort = document.querySelector(`[name=${key}]`).value;
-        if (userAntwort === richtigeAntworten[key]) {
-          punkte++;
-        }
+    // Shuffle-Funktion
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
       }
+    }
 
-      document.getElementById('ergebnis').innerText = `Du hast ${punkte} von ${gesamt} richtig.`;
+    shuffle(daten);
+
+    const form = document.getElementById("quizForm");
+
+    daten.forEach((item, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "quiz-item";
+
+      const img = document.createElement("img");
+      img.src = `images/${item.bild}`;
+      img.alt = item.korrekt;
+
+      const select = document.createElement("select");
+      select.name = item.name;
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "-- Begriff auswählen --";
+      select.appendChild(defaultOption);
+      item.begriffe.forEach(begriff => {
+        const opt = document.createElement("option");
+        opt.value = begriff;
+        opt.textContent = begriff;
+        select.appendChild(opt);
+      });
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(select);
+      form.appendChild(wrapper);
+    });
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      let punkte = 0;
+      daten.forEach(item => {
+        const antwort = document.querySelector(`[name='${item.name}']`).value;
+        if (antwort === item.korrekt) punkte++;
+      });
+      document.getElementById('ergebnis').innerText = `Du hast ${punkte} von ${daten.length} richtig.`;
     });
   </script>
 </body>
