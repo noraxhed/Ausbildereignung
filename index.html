@@ -1,4 +1,65 @@
-<html>
-<Head>
-</Head>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fachbegriffe Veranstaltungstechnik - Übung</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Fachbegriffe der Veranstaltungstechnik</h1>
+    <p>Ordne jedem Bild den passenden Begriff zu.</p>
+
+    <form id="quizForm">
+      <div class="quiz-item">
+        <img src="images/bild1.jpg" alt="Bild 1">
+        <select name="frage1">
+          <option value="">-- Begriff auswählen --</option>
+          <option value="Begriff 1">Begriff 1</option>
+          <option value="Begriff 2">Begriff 2</option>
+          <option value="Begriff 3">Begriff 3</option>
+        </select>
+      </div>
+
+      <div class="quiz-item">
+        <img src="images/bild2.jpg" alt="Bild 2">
+        <select name="frage2">
+          <option value="">-- Begriff auswählen --</option>
+          <option value="Begriff 1">Begriff 1</option>
+          <option value="Begriff 2">Begriff 2</option>
+          <option value="Begriff 3">Begriff 3</option>
+        </select>
+      </div>
+
+      <button type="submit">Auswertung anzeigen</button>
+    </form>
+
+    <div id="ergebnis"></div>
+  </main>
+
+  <script>
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const richtigeAntworten = {
+        frage1: "Begriff 1",
+        frage2: "Begriff 2"
+        // Weitere Zuordnungen: frage3: "Begriff 3", usw.
+      };
+
+      let punkte = 0;
+      let gesamt = Object.keys(richtigeAntworten).length;
+
+      for (let key in richtigeAntworten) {
+        const userAntwort = document.querySelector(`[name=${key}]`).value;
+        if (userAntwort === richtigeAntworten[key]) {
+          punkte++;
+        }
+      }
+
+      document.getElementById('ergebnis').innerText = `Du hast ${punkte} von ${gesamt} richtig.`;
+    });
+  </script>
+</body>
 </html>
