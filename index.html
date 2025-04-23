@@ -88,8 +88,8 @@
   </main>
   <script>
     const daten = [
-      { bild: "bild1.jpg", name: "frage1", korrekt: "Bühne", begriffe: ["Bühne", "Mikrofon", "Traverse"] },
-      { bild: "bild2.jpg", name: "frage2", korrekt: "Traverse", begriffe: ["Traverse", "Rigging", "PA-Anlage"] },
+      { bild: "Bild1.jpg", name: "frage1", korrekt: "Bühne", begriffe: ["Bühne", "Mikrofon", "Traverse"] },
+      { bild: "Bild2.jpg", name: "frage2", korrekt: "Traverse", begriffe: ["Traverse", "Rigging", "PA-Anlage"] },
       { bild: "Bild3.jpg", name: "frage3", korrekt: "FOH", begriffe: ["FOH", "Backstage", "Scheinwerfer"] },
       { bild: "Bild4.jpg", name: "frage4", korrekt: "Rigging", begriffe: ["Rigging", "Laufweg", "Notausgang"] },
       { bild: "Bild5.jpg", name: "frage5", korrekt: "PA-Anlage", begriffe: ["PA-Anlage", "Lichtpult", "Bühne"] },
@@ -100,7 +100,6 @@
       { bild: "Bild10.jpg", name: "frage10", korrekt: "Backstage", begriffe: ["Backstage", "Rigging", "PA-Anlage"] }
     ];
 
-    // Shuffle-Funktion
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -112,7 +111,7 @@
 
     const form = document.getElementById("quizForm");
 
-    daten.forEach((item, index) => {
+    daten.forEach((item) => {
       const wrapper = document.createElement("div");
       wrapper.className = "quiz-item";
 
