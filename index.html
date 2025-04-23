@@ -46,6 +46,26 @@
       object-fit: cover;
       border: 1px solid #ccc;
       border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 10px;
     }
 
     select {
@@ -82,22 +102,31 @@
   <main>
     <h1>Fachbegriffe der Veranstaltungstechnik</h1>
     <p>Ordne jedem Bild den passenden Begriff zu.</p>
-
     <form id="quizForm"></form>
     <div id="ergebnis"></div>
   </main>
+
+  <div class="lightbox" id="lightbox">
+    <img src="" alt="" id="lightbox-img">
+  </div>
+
   <script>
+    const alleBegriffe = [
+      "Bühne", "Traverse", "FOH", "Rigging", "PA-Anlage",
+      "Lichtpult", "Mikrofon", "Laufweg", "Scheinwerfer", "Backstage"
+    ];
+
     const daten = [
-      { bild: "Bild1.jpg", name: "frage1", korrekt: "Bühne", begriffe: ["Bühne", "Mikrofon", "Traverse"] },
-      { bild: "Bild2.jpg", name: "frage2", korrekt: "Traverse", begriffe: ["Traverse", "Rigging", "PA-Anlage"] },
-      { bild: "Bild3.jpg", name: "frage3", korrekt: "FOH", begriffe: ["FOH", "Backstage", "Scheinwerfer"] },
-      { bild: "Bild4.jpg", name: "frage4", korrekt: "Rigging", begriffe: ["Rigging", "Laufweg", "Notausgang"] },
-      { bild: "Bild5.jpg", name: "frage5", korrekt: "PA-Anlage", begriffe: ["PA-Anlage", "Lichtpult", "Bühne"] },
-      { bild: "Bild6.jpg", name: "frage6", korrekt: "Lichtpult", begriffe: ["Lichtpult", "Traverse", "Mikrofon"] },
-      { bild: "Bild7.jpg", name: "frage7", korrekt: "Mikrofon", begriffe: ["Mikrofon", "Scheinwerfer", "Backstage"] },
-      { bild: "Bild8.jpg", name: "frage8", korrekt: "Laufweg", begriffe: ["Laufweg", "FOH", "Notausgang"] },
-      { bild: "Bild9.jpg", name: "frage9", korrekt: "Scheinwerfer", begriffe: ["Scheinwerfer", "Lichtpult", "Backstage"] },
-      { bild: "Bild10.jpg", name: "frage10", korrekt: "Backstage", begriffe: ["Backstage", "Rigging", "PA-Anlage"] }
+      { bild: "Bild1.jpg", name: "frage1", korrekt: "Bühne" },
+      { bild: "Bild2.jpg", name: "frage2", korrekt: "Traverse" },
+      { bild: "Bild3.jpg", name: "frage3", korrekt: "FOH" },
+      { bild: "Bild4.jpg", name: "frage4", korrekt: "Rigging" },
+      { bild: "Bild5.jpg", name: "frage5", korrekt: "PA-Anlage" },
+      { bild: "Bild6.jpg", name: "frage6", korrekt: "Lichtpult" },
+      { bild: "Bild7.jpg", name: "frage7", korrekt: "Mikrofon" },
+      { bild: "Bild8.jpg", name: "frage8", korrekt: "Laufweg" },
+      { bild: "Bild9.jpg", name: "frage9", korrekt: "Scheinwerfer" },
+      { bild: "Bild10.jpg", name: "frage10", korrekt: "Backstage" }
     ];
 
     function shuffle(array) {
@@ -116,8 +145,14 @@
       wrapper.className = "quiz-item";
 
       const img = document.createElement("img");
-      img.src = `${item.bild}`;
+      img.src = item.bild;
       img.alt = item.korrekt;
+      img.addEventListener("click", () => {
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.getElementById("lightbox-img");
+        lightboxImg.src = item.bild;
+        lightbox.style.display = "flex";
+      });
 
       const select = document.createElement("select");
       select.name = item.name;
@@ -125,7 +160,7 @@
       defaultOption.value = "";
       defaultOption.textContent = "-- Begriff auswählen --";
       select.appendChild(defaultOption);
-      item.begriffe.forEach(begriff => {
+      alleBegriffe.forEach(begriff => {
         const opt = document.createElement("option");
         opt.value = begriff;
         opt.textContent = begriff;
@@ -135,6 +170,10 @@
       wrapper.appendChild(img);
       wrapper.appendChild(select);
       form.appendChild(wrapper);
+    });
+
+    document.getElementById("lightbox").addEventListener("click", () => {
+      document.getElementById("lightbox").style.display = "none";
     });
 
     form.addEventListener('submit', function(e) {
