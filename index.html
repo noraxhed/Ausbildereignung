@@ -191,6 +191,11 @@
         form.appendChild(wrapper);
       });
 
+      const button = document.createElement("button");
+      button.type = "submit";
+      button.textContent = "Auswertung anzeigen";
+      form.appendChild(button);
+
       form.onsubmit = function (e) {
         e.preventDefault();
         let punkte = 0;
