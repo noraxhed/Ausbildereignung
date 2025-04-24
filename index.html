@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fachbegriffe Veranstaltungstechnik - Übung</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -49,25 +48,6 @@
       cursor: pointer;
     }
 
-    .lightbox {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      border-radius: 10px;
-    }
-
     select {
       flex: 1;
       padding: 0.5rem;
@@ -96,12 +76,44 @@
       margin-top: 1rem;
       font-size: 1.2rem;
     }
+
+    .richtig {
+      background-color: #c8e6c9;
+    }
+
+    .falsch {
+      background-color: #ffcdd2;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
   <main>
     <h1>Fachbegriffe der Veranstaltungstechnik</h1>
-    <p>Ordne jedem Bild den passenden Begriff zu.</p>
+    <label for="levelSelect">Level wählen:</label>
+    <select id="levelSelect">
+      <option value="1" selected>Level 1</option>
+      <option value="2">Level 2</option>
+    </select>
+
     <form id="quizForm"></form>
     <div id="ergebnis"></div>
   </main>
@@ -116,7 +128,7 @@
       "Lichtpult", "Mikrofon", "Laufweg", "Scheinwerfer", "Backstage"
     ];
 
-    const daten = [
+    const level1Data = [
       { bild: "Bild1.jpg", name: "frage1", korrekt: "Bühne" },
       { bild: "Bild2.jpg", name: "frage2", korrekt: "Traverse" },
       { bild: "Bild3.jpg", name: "frage3", korrekt: "FOH" },
@@ -129,6 +141,14 @@
       { bild: "Bild10.jpg", name: "frage10", korrekt: "Backstage" }
     ];
 
+    const level2Data = Array.from({ length: 10 }, (_, i) => {
+      return {
+        bild: `Bild2.${i + 1}.jpg`,
+        name: `frage2_${i + 1}`,
+        korrekt: alleBegriffe[i % alleBegriffe.length]
+      };
+    });
+
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -136,55 +156,70 @@
       }
     }
 
-    shuffle(daten);
+    function ladeFragen(daten) {
+      const form = document.getElementById("quizForm");
+      form.innerHTML = "";
+      shuffle(daten);
+      daten.forEach((item) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "quiz-item";
 
-    const form = document.getElementById("quizForm");
+        const img = document.createElement("img");
+        img.src = item.bild;
+        img.alt = item.korrekt;
+        img.addEventListener("click", () => {
+          document.getElementById("lightbox-img").src = item.bild;
+          document.getElementById("lightbox").style.display = "flex";
+        });
 
-    daten.forEach((item) => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "quiz-item";
+        const select = document.createElement("select");
+        select.name = item.name;
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "-- Begriff auswählen --";
+        select.appendChild(defaultOption);
 
-      const img = document.createElement("img");
-      img.src = item.bild;
-      img.alt = item.korrekt;
-      img.addEventListener("click", () => {
-        const lightbox = document.getElementById("lightbox");
-        const lightboxImg = document.getElementById("lightbox-img");
-        lightboxImg.src = item.bild;
-        lightbox.style.display = "flex";
+        alleBegriffe.forEach(begriff => {
+          const opt = document.createElement("option");
+          opt.value = begriff;
+          opt.textContent = begriff;
+          select.appendChild(opt);
+        });
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(select);
+        form.appendChild(wrapper);
       });
 
-      const select = document.createElement("select");
-      select.name = item.name;
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.textContent = "-- Begriff auswählen --";
-      select.appendChild(defaultOption);
-      alleBegriffe.forEach(begriff => {
-        const opt = document.createElement("option");
-        opt.value = begriff;
-        opt.textContent = begriff;
-        select.appendChild(opt);
-      });
-
-      wrapper.appendChild(img);
-      wrapper.appendChild(select);
-      form.appendChild(wrapper);
-    });
+      form.onsubmit = function (e) {
+        e.preventDefault();
+        let punkte = 0;
+        daten.forEach(item => {
+          const select = document.querySelector(`[name='${item.name}']`);
+          const antwort = select.value;
+          if (antwort === item.korrekt) {
+            punkte++;
+            select.classList.add("richtig");
+            select.classList.remove("falsch");
+          } else {
+            select.classList.add("falsch");
+            select.classList.remove("richtig");
+          }
+        });
+        document.getElementById('ergebnis').innerText = `Du hast ${punkte} von ${daten.length} richtig.`;
+      };
+    }
 
     document.getElementById("lightbox").addEventListener("click", () => {
       document.getElementById("lightbox").style.display = "none";
     });
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      let punkte = 0;
-      daten.forEach(item => {
-        const antwort = document.querySelector(`[name='${item.name}']`).value;
-        if (antwort === item.korrekt) punkte++;
-      });
-      document.getElementById('ergebnis').innerText = `Du hast ${punkte} von ${daten.length} richtig.`;
+    document.getElementById("levelSelect").addEventListener("change", function () {
+      const level = this.value;
+      ladeFragen(level === "2" ? level2Data : level1Data);
     });
+
+    ladeFragen(level1Data);
   </script>
 </body>
 </html>
