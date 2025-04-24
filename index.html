@@ -201,8 +201,9 @@
         let punkte = 0;
         daten.forEach(item => {
           const select = document.querySelector(`[name='${item.name}']`);
-          const antwort = select.value;
-          if (antwort === item.korrekt) {
+          const antwort = select.value.trim().toLowerCase();
+          const korrekt = item.korrekt.trim().toLowerCase();
+          if (antwort === korrekt) {
             punkte++;
             select.classList.add("richtig");
             select.classList.remove("falsch");
