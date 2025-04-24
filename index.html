@@ -124,28 +124,31 @@
 
   <script>
     const alleBegriffe = [
-      "Bühne", "Traverse", "FOH", "Rigging", "PA-Anlage",
-      "Lichtpult", "Mikrofon", "Laufweg", "Scheinwerfer", "Backstage"
+      "Traverse", "FOH (Front of House)", "Rigging", "PA-Anlage", "Lichtpult",
+      "Mikrofon", "Laufweg", "Backstage", "Scheinwerfer", "Bühne"
     ];
 
-    const level1Data = [
-      { bild: "Bild1.jpg", name: "frage1", korrekt: "Bühne" },
-      { bild: "Bild2.jpg", name: "frage2", korrekt: "Traverse" },
-      { bild: "Bild3.jpg", name: "frage3", korrekt: "FOH" },
-      { bild: "Bild4.jpg", name: "frage4", korrekt: "Rigging" },
-      { bild: "Bild5.jpg", name: "frage5", korrekt: "PA-Anlage" },
-      { bild: "Bild6.jpg", name: "frage6", korrekt: "Lichtpult" },
-      { bild: "Bild7.jpg", name: "frage7", korrekt: "Mikrofon" },
-      { bild: "Bild8.jpg", name: "frage8", korrekt: "Laufweg" },
-      { bild: "Bild9.jpg", name: "frage9", korrekt: "Scheinwerfer" },
-      { bild: "Bild10.jpg", name: "frage10", korrekt: "Backstage" }
-    ];
+    const bildZuBegriff = {
+      "Bild1.jpg": "Traverse",
+      "Bild2.jpg": "FOH (Front of House)",
+      "Bild3.jpg": "Rigging",
+      "Bild4.jpg": "PA-Anlage",
+      "Bild5.jpg": "Lichtpult",
+      "Bild6.jpg": "Mikrofon",
+      "Bild7.jpg": "Laufweg",
+      "Bild8.jpg": "Backstage",
+      "Bild9.jpg": "Scheinwerfer",
+      "Bild10.jpg": "Bühne"
+    };
+
+    const level1Data = Object.keys(bildZuBegriff).map((bild, i) => {
+      return { bild, name: `frage${i + 1}` };
+    });
 
     const level2Data = Array.from({ length: 10 }, (_, i) => {
       return {
         bild: `Bild2.${i + 1}.jpg`,
-        name: `frage2_${i + 1}`,
-        korrekt: alleBegriffe[i % alleBegriffe.length]
+        name: `frage2_${i + 1}`
       };
     });
 
@@ -166,7 +169,7 @@
 
         const img = document.createElement("img");
         img.src = item.bild;
-        img.alt = item.korrekt;
+        img.alt = "Bild";
         img.addEventListener("click", () => {
           document.getElementById("lightbox-img").src = item.bild;
           document.getElementById("lightbox").style.display = "flex";
@@ -202,7 +205,7 @@
         daten.forEach(item => {
           const select = document.querySelector(`[name='${item.name}']`);
           const antwort = select.value.trim().toLowerCase();
-          const korrekt = item.korrekt.trim().toLowerCase();
+          const korrekt = (bildZuBegriff[item.bild] || "").trim().toLowerCase();
           if (antwort === korrekt) {
             punkte++;
             select.classList.add("richtig");
